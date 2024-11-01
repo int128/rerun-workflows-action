@@ -2,6 +2,13 @@ name: fixture
 
 on:
   pull_request:
+    # This must be same as ts.yaml
+    paths:
+      - src/**
+      - tests/**
+      - '*.json'
+      - '*.yaml'
+      - .github/workflows/ts.yaml
 
 jobs:
   success-on-rerun:
