@@ -30,12 +30,16 @@ export const run = async (inputs: Inputs): Promise<void> => {
       { data: 'Conclusion', header: true },
       { data: 'Status', header: true },
       { data: 'Attempt', header: true },
+      { data: 'Created at', header: true },
+      { data: 'Updated at', header: true },
     ],
     ...workflowRuns.map((workflowRun) => [
-      `[${workflowRun.name ?? '-'}](${workflowRun.html_url})`,
+      `<a href="${workflowRun.html_url}">${workflowRun.name ?? '-'}</a>`,
       workflowRun.conclusion ?? '-',
       workflowRun.status ?? '-',
       workflowRun.run_attempt?.toString() ?? '-',
+      workflowRun.created_at,
+      workflowRun.updated_at,
     ]),
   ])
   await core.summary.write()
