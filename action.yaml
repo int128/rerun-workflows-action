@@ -1,10 +1,17 @@
-name: typescript-action
-description: Template of TypeScript Action
+name: rerun-workflows-action
+description: Rerun failed workflow runs
 
 inputs:
-  name:
-    description: example input
+  event:
+    description: Event name of workflow runs
     required: true
+  sha:
+    description: Commit SHA of workflow runs
+    required: true
+  token:
+    description: GitHub token
+    required: true
+    default: ${{ github.token }}
 
 runs:
   using: 'node20'
