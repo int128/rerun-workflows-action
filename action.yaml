@@ -4,10 +4,10 @@ description: Rerun failed workflow runs
 inputs:
   event:
     description: Event name of workflow runs
-    required: true
+    required: false
   sha:
     description: Commit SHA of workflow runs
-    required: true
+    required: false
   token:
     description: GitHub token
     required: true
