@@ -21,7 +21,9 @@ export const run = async (inputs: Inputs): Promise<void> => {
     status: 'failure',
     per_page: 100,
   })
+  core.info(`Found ${workflowRuns.length} failed workflow runs`)
 
+  core.summary.addHeading('Failed workflow runs')
   core.summary.addTable([
     [
       { data: 'Workflow', header: true },
