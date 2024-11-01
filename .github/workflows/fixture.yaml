@@ -1,0 +1,11 @@
+name: fixture
+
+on:
+  pull_request:
+
+jobs:
+  success-on-rerun:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - run: test ${{ github.run_attempt }} = 2
