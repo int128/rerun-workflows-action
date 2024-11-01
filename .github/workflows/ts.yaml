@@ -35,7 +35,8 @@ jobs:
       - name: e2e-test
         uses: ./
         with:
-          name: foo
+          event: ${{ github.event_name }}
+          sha: ${{ github.event.pull_request.head.sha || github.sha }}
 
   generate:
     runs-on: ubuntu-latest
