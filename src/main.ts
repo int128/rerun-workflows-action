@@ -3,7 +3,7 @@ import * as github from '@actions/github'
 import { run } from './run.js'
 
 const main = async (): Promise<void> => {
-  await run(
+  const outputs = await run(
     {
       sha: core.getInput('sha', { required: true }),
       event: core.getInput('event', { required: true }),
@@ -14,6 +14,7 @@ const main = async (): Promise<void> => {
       repo: github.context.repo.repo,
     },
   )
+  core.setOutput('workflow-runs-count', outputs.workflowRunsCount)
 }
 
 main().catch((e: Error) => {

@@ -48,4 +48,6 @@ jobs:
 
 ### Outputs
 
-None.
+| Name                  | Description                       |
+| --------------------- | --------------------------------- |
+| `workflow-runs-count` | The number of rerun workflow runs |
