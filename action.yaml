@@ -13,6 +13,10 @@ inputs:
     required: true
     default: ${{ github.token }}
 
+outputs:
+  workflow-runs-count:
+    description: Number of rerun workflow runs
+
 runs:
   using: 'node20'
   main: 'dist/index.js'

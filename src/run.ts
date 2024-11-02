@@ -7,7 +7,11 @@ type Inputs = {
   token: string
 }
 
-export const run = async (inputs: Inputs, context: github.Context): Promise<void> => {
+type Outputs = {
+  workflowRunsCount: number
+}
+
+export const run = async (inputs: Inputs, context: github.Context): Promise<Outputs> => {
   const octokit = github.getOctokit(inputs.token)
 
   core.info(`Fetching the failed workflow runs for ${context.owner}/${context.repo}@${inputs.sha}:${inputs.event}`)
@@ -52,5 +56,9 @@ export const run = async (inputs: Inputs, context: github.Context): Promise<void
       repo: context.repo,
       run_id: workflowRun.id,
     })
+  }
+
+  return {
+    workflowRunsCount: workflowRuns.length,
   }
 }
