@@ -1,13 +1,16 @@
 # rerun-workflows-action [![ts](https://github.com/int128/rerun-workflows-action/actions/workflows/ts.yaml/badge.svg)](https://github.com/int128/rerun-workflows-action/actions/workflows/ts.yaml)
 
-This action reruns the failed workflow runs.
+This action finds the failed workflow runs and reruns them.
 
 ## Getting Started
 
-Here is an example workflow.
-When `/rerun` is commented on a pull request, this action reruns the failed workflow runs.
+GitHub Actions does not provide a way to rerun the failed workflow runs of a pull request.
+We need to open the failed workflow runs and click the **Re-run failed jobs** button for each workflow run.
+
+The below workflow reruns the failed workflow runs when `/rerun` is commented on a pull request.
 
 ```yaml
+# When `/rerun` is commented on a pull request, rerun the failed workflow runs.
 name: rerun-workflows
 
 on:
@@ -37,7 +40,19 @@ jobs:
           sha: ${{ steps.get-head-sha.outputs.result }}
 ```
 
+For example, you created a pull request and the following workflows are triggered:
+
+- :white_check_mark: `microservice1-test`
+- :x: `microservice2-test`
+- :white_check_mark: `microservice3-test`
+- :x: `microservice4-test`
+- :white_check_mark: `microservice5-test`
+
+When you comment `/rerun` on the pull request, this action reruns the failed workflow runs `microservice2-test` and `microservice4-test`.
+
 ## Specification
+
+This action finds the failed workflow runs by the given event name and commit SHA.
 
 ### Inputs
 
