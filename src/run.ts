@@ -22,7 +22,7 @@ export const run = async (inputs: Inputs, context: github.Context): Promise<void
   })
   core.info(`Found ${workflowRuns.length} failed workflow runs`)
 
-  core.summary.addHeading('Failed workflow runs')
+  core.summary.addHeading('Workflow runs')
   core.summary.addTable([
     [
       { data: 'Workflow', header: true },
@@ -39,8 +39,8 @@ export const run = async (inputs: Inputs, context: github.Context): Promise<void
       workflowRun.conclusion ?? '-',
       workflowRun.status ?? '-',
       workflowRun.run_attempt?.toString() ?? '-',
-      workflowRun.created_at,
-      workflowRun.updated_at,
+      new Date(workflowRun.created_at).toISOString(),
+      new Date(workflowRun.updated_at).toISOString(),
     ]),
   ])
   await core.summary.write()
