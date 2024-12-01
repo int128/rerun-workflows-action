@@ -22,6 +22,8 @@ jobs:
   rerun:
     if: github.event.issue.pull_request && github.event.comment.body == '/rerun'
     runs-on: ubuntu-latest
+    permissions:
+      actions: write # rerun-workflows
     steps:
       - uses: actions/github-script@v7
         id: get-head-sha
