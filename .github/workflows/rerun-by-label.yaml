@@ -1,4 +1,4 @@
-name: rerun-on-label
+name: rerun-by-label
 
 on:
   pull_request:
@@ -26,7 +26,7 @@ jobs:
       - name: Use int128/rerun-workflows-action
         uses: ./
         with:
-          event: ${{ github.event_name }}
+          event: pull_request
           sha: ${{ github.event.pull_request.head.sha }}
 
       - name: Remove the label

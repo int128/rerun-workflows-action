@@ -1,4 +1,4 @@
-name: rerun-on-label
+name: rerun-by-label
 
 on:
   issue_comment:
@@ -7,7 +7,7 @@ on:
 
 jobs:
   rerun-workflows:
-    if: github.event.comment.body == '/rerun'
+    if: github.event.issue.pull_request && github.event.comment.body == '/rerun'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
@@ -36,5 +36,5 @@ jobs:
       - name: Use int128/rerun-workflows-action
         uses: ./
         with:
-          event: ${{ github.event_name }}
+          event: pull_request
           sha: ${{ steps.get-head-sha.outputs.result }}
