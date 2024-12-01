@@ -21,7 +21,6 @@ jobs:
           node-version: 20
       - run: corepack enable pnpm
       - run: pnpm i
-      - run: pnpm test
       - run: pnpm build
 
       - name: Use int128/rerun-workflows-action
