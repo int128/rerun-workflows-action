@@ -1,3 +1,4 @@
+import { test, expect } from 'vitest'
 test('TODO', () => {
-  // TODO
+  expect(true).toBe(true)
 })
