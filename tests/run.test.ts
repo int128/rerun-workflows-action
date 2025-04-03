@@ -1,4 +1,4 @@
-import { test } from 'vitest'
+import { test, extect } from 'vitest'
 test('TODO', () => {
-  // TODO
+  extect(true).toBe(true)
 })
