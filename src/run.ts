@@ -1,5 +1,6 @@
 import * as core from '@actions/core'
-import * as github from './github.js'
+import { Context } from './github.js'
+import { Octokit } from '@octokit/action'
 
 type Inputs = {
   sha: string
@@ -11,13 +12,13 @@ type Outputs = {
   workflowRunsCount: number
 }
 
-export const run = async (inputs: Inputs, context: github.Context): Promise<Outputs> => {
-  const octokit = github.getOctokit(inputs.token)
-
-  core.info(`Fetching the failed workflow runs for ${context.owner}/${context.repo}@${inputs.sha}:${inputs.event}`)
+export const run = async (inputs: Inputs, octokit: Octokit, context: Context): Promise<Outputs> => {
+  core.info(
+    `Fetching the failed workflow runs for ${context.repo.owner}/${context.repo.repo}@${inputs.sha}:${inputs.event}`,
+  )
   const workflowRuns = await octokit.paginate(octokit.rest.actions.listWorkflowRunsForRepo, {
-    owner: context.owner,
-    repo: context.repo,
+    owner: context.repo.owner,
+    repo: context.repo.repo,
     head_sha: inputs.sha,
     event: inputs.event,
     status: 'failure',
@@ -52,8 +53,8 @@ export const run = async (inputs: Inputs, context: github.Context): Promise<Outp
   for (const workflowRun of workflowRuns) {
     core.info(`Re-running failed workflow run: ${workflowRun.html_url}`)
     await octokit.rest.actions.reRunWorkflowFailedJobs({
-      owner: context.owner,
-      repo: context.repo,
+      owner: context.repo.owner,
+      repo: context.repo.repo,
       run_id: workflowRun.id,
     })
   }
