@@ -7,7 +7,7 @@ on:
 
 jobs:
   rerun-workflows:
-    if: github.event.label.name == 'rerun'
+    if: github.event.label.name == '/rerun'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
@@ -29,13 +29,6 @@ jobs:
           event: pull_request
           sha: ${{ github.event.pull_request.head.sha }}
 
-      - name: Remove the label
-        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
+      - uses: int128/label-action@ed0a7bb45af8a4dc69f7f302b29adf8168e1434b # v1.5.0
         with:
-          script: |
-            await github.rest.issues.removeLabel({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-              name: context.payload.label.name,
-            })
+          remove-labels: ${{ github.event.label.name }}
