@@ -2,14 +2,16 @@
 
 This action reruns the failed workflow runs.
 
-GitHub does not provide a way to rerun the failed workflow runs of a pull request.
-We need to open the failed workflow runs and click the **Re-run failed jobs** button for each workflow run.
+## Motivation
+
+GitHub does not provide an easy way to rerun the failed workflow runs.
+We need to open each workflow run and click the **Re-run failed jobs** button.
 
 ## Getting started
 
 ### Trigger the rerun by a comment
 
-When `/rerun` is commented on a pull request, the below workflow reruns the failed workflow runs.
+The below example reruns the failed workflow runs when `/rerun` is commented on a pull request.
 
 ```yaml
 # When `/rerun` is commented on a pull request, rerun the failed workflow runs.
@@ -44,22 +46,12 @@ jobs:
           sha: ${{ steps.get-head-sha.outputs.result }}
 ```
 
-For example, you created a pull request and the following workflows are triggered:
-
-- :white_check_mark: `microservice1-test`
-- :x: `microservice2-test`
-- :white_check_mark: `microservice3-test`
-- :x: `microservice4-test`
-- :white_check_mark: `microservice5-test`
-
-When you comment `/rerun` on the pull request, this action reruns the failed workflow runs `microservice2-test` and `microservice4-test`.
-
 ### Trigger the rerun by a label
 
-When `rerun` label is added to a pull request, the below workflow reruns the failed workflow runs.
+The below example reruns the failed workflow runs when `/rerun` label is added to a pull request.
 
 ```yaml
-# When `rerun` label is added to a pull request, rerun the failed workflow runs.
+# When `/rerun` label is added to a pull request, rerun the failed workflow runs.
 name: rerun-by-label
 
 on:
@@ -69,7 +61,7 @@ on:
 
 jobs:
   rerun-workflows:
-    if: github.event.label.name == 'rerun'
+    if: github.event.label.name == '/rerun'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
@@ -94,7 +86,17 @@ jobs:
 
 ## Specification
 
-This action finds the failed workflow runs by the given event name and commit SHA.
+This action finds the failed workflow runs on the target event and commit.
+
+For example, there are the following workflow runs on the target commit,
+
+- :white_check_mark: `microservice1-test`
+- :x: `microservice2-test`
+- :white_check_mark: `microservice3-test`
+- :x: `microservice4-test`
+- :white_check_mark: `microservice5-test`
+
+this action reruns `microservice2-test` and `microservice4-test`.
 
 ### Inputs
 
