@@ -72,16 +72,9 @@ jobs:
         with:
           event: pull_request
           sha: ${{ github.event.pull_request.head.sha }}
-      - name: Remove the label
-        uses: actions/github-script@v7
+      - uses: int128/label-action@v1
         with:
-          script: |
-            await github.rest.issues.removeLabel({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-              name: context.payload.label.name,
-            })
+          remove-labels: ${{ github.event.label.name }}
 ```
 
 ## Specification
