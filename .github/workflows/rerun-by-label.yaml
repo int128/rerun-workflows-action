@@ -29,6 +29,6 @@ jobs:
           event: pull_request
           sha: ${{ github.event.pull_request.head.sha }}
 
-      - uses: int128/label-action@7428507998d601a96831a291b8864cc3c44a1b30 # v1.6.0
+      - uses: int128/label-action@b75be7a59dd43aaf63fa20bbf901d9df21f3b2a3 # v1.7.0
         with:
           remove-labels: ${{ github.event.label.name }}
