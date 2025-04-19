@@ -51,6 +51,11 @@ export const run = async (inputs: Inputs, octokit: Octokit, context: Context): P
   await core.summary.write()
 
   for (const workflowRun of workflowRuns) {
+    // Avoid re-running the current workflow to prevent an infinite loop.
+    if (workflowRun.name === context.workflow) {
+      continue
+    }
+
     core.info(`Re-running failed workflow run: ${workflowRun.html_url}`)
     await octokit.rest.actions.reRunWorkflowFailedJobs({
       owner: context.repo.owner,
