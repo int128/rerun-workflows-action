@@ -12,7 +12,12 @@ on:
 
 jobs:
   success-on-rerun:
+    strategy:
+      fail-fast: false
+      matrix:
+        id: [10, 20, 30]
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
+      - run: sleep '${{ matrix.id }}'
       - run: test ${{ github.run_attempt }} = 2
