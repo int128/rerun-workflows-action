@@ -56,7 +56,7 @@ const rerunFailedWorkflowRuns = async (inputs: Inputs, octokit: Octokit, context
 
   const rerunWorkflowRuns = []
   for (const workflowRun of workflowRuns) {
-    core.info(`Rerunning workflow run: ${workflowRun.name}: ${workflowRun.html_url}`)
+    core.info(`Rerunning: ${workflowRun.name}: ${workflowRun.html_url}`)
     try {
       await octokit.rest.actions.reRunWorkflowFailedJobs({
         owner: context.repo.owner,
