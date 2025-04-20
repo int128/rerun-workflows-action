@@ -22,19 +22,5 @@ jobs:
       - run: pnpm i
       - run: pnpm build
 
-      - uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
-        id: get-head-sha
-        with:
-          result-encoding: string
-          script: |
-            const { data: pull } = await github.rest.pulls.get({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              pull_number: context.payload.issue.number,
-            })
-            return pull.head.sha
       - name: Use int128/rerun-workflows-action
         uses: ./
-        with:
-          event: pull_request
-          sha: ${{ steps.get-head-sha.outputs.result }}
