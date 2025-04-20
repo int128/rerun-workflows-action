@@ -5,12 +5,11 @@ import { getContext, getOctokit } from './github.js'
 const main = async () => {
   const outputs = await run(
     {
-      sha: core.getInput('sha', { required: true }),
-      event: core.getInput('event', { required: true }),
-      token: core.getInput('token', { required: true }),
+      sha: core.getInput('sha'),
+      event: core.getInput('event'),
     },
     getOctokit(),
-    getContext(),
+    await getContext(),
   )
   core.setOutput('workflow-runs-count', outputs.workflowRunsCount)
 }

@@ -5,7 +5,6 @@ import { Octokit } from '@octokit/action'
 type Inputs = {
   sha: string
   event: string
-  token: string
 }
 
 type Outputs = {
@@ -13,8 +12,45 @@ type Outputs = {
 }
 
 export const run = async (inputs: Inputs, octokit: Octokit, context: Context): Promise<Outputs> => {
+  if (inputs.sha && inputs.event) {
+    return await rerunFailedWorkflows(inputs, octokit, context)
+  }
+
+  if ('pull_request' in context.payload) {
+    return await rerunFailedWorkflows(
+      {
+        event: 'pull_request',
+        sha: context.payload.pull_request.head.sha,
+      },
+      octokit,
+      context,
+    )
+  }
+
+  if ('issue' in context.payload && context.payload.issue.pull_request) {
+    core.info(`Finding the pull request #${context.payload.issue.number}`)
+    const { data: pull } = await octokit.rest.pulls.get({
+      owner: context.repo.owner,
+      repo: context.repo.repo,
+      pull_number: context.payload.issue.number,
+    })
+    return await rerunFailedWorkflows(
+      {
+        event: 'pull_request',
+        sha: pull.head.sha,
+      },
+      octokit,
+      context,
+    )
+  }
+
+  core.info(`Do nothing for the current event`)
+  return { workflowRunsCount: 0 }
+}
+
+const rerunFailedWorkflows = async (inputs: Inputs, octokit: Octokit, context: Context): Promise<Outputs> => {
   core.info(
-    `Fetching the failed workflow runs for ${context.repo.owner}/${context.repo.repo}@${inputs.sha}:${inputs.event}`,
+    `Finding the failed workflow runs for ${context.repo.owner}/${context.repo.repo}@${inputs.sha}:${inputs.event}`,
   )
   const workflowRuns = await octokit.paginate(octokit.rest.actions.listWorkflowRunsForRepo, {
     owner: context.repo.owner,

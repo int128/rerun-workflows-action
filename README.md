@@ -29,21 +29,7 @@ jobs:
     permissions:
       actions: write # To rerun workflows
     steps:
-      - uses: actions/github-script@v7
-        id: get-head-sha
-        with:
-          result-encoding: string
-          script: |
-            const { data: pull } = await github.rest.pulls.get({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              pull_number: context.payload.issue.number,
-            })
-            return pull.head.sha
       - uses: int128/rerun-workflows-action@v0
-        with:
-          event: pull_request
-          sha: ${{ steps.get-head-sha.outputs.result }}
 ```
 
 ### Trigger the rerun by a label
@@ -69,9 +55,6 @@ jobs:
       pull-requests: write # To remove label
     steps:
       - uses: int128/rerun-workflows-action@v0
-        with:
-          event: pull_request
-          sha: ${{ github.event.pull_request.head.sha }}
       - uses: int128/label-action@v1
         with:
           remove-labels: ${{ github.event.label.name }}
@@ -79,9 +62,8 @@ jobs:
 
 ## Specification
 
-This action finds the failed workflow runs on the target event and commit.
-
-For example, there are the following workflow runs on the target commit,
+This action finds the failed workflow runs on the specified event and commit.
+For example, there are the following workflow runs,
 
 - :white_check_mark: `microservice1-test`
 - :x: `microservice2-test`
@@ -93,10 +75,15 @@ this action reruns `microservice2-test` and `microservice4-test`.
 
 ### Inputs
 
-| Name    | Default    | Description                          |
-| ------- | ---------- | ------------------------------------ |
-| `event` | (required) | Event name of workflow runs to rerun |
-| `sha`   | (required) | Commit SHA of workflow runs to rerun |
+| Name    | Default | Description                          |
+| ------- | ------- | ------------------------------------ |
+| `event` | -       | Event name of workflow runs to rerun |
+| `sha`   | -       | Commit SHA of workflow runs to rerun |
+
+If `event` and `sha` are not specified, this action infers the event and commit as follows:
+
+- When this action is run on a pull request, it finds the workflow runs triggered by the pull request.
+- Otherwise, it does nothing.
 
 ### Outputs
 
