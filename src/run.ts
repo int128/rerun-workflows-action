@@ -111,7 +111,7 @@ const rerunFailedWorkflowRuns = async (inputs: Inputs, octokit: Octokit, context
 
 const findWorkflowRunsForRerun = async (inputs: Inputs, octokit: Octokit, context: Context) => {
   core.info(`Finding the failed workflow runs for commit ${inputs.sha} and event ${inputs.event}`)
-  const rawWorkflowRuns = await octokit.paginate(octokit.rest.actions.listWorkflowRunsForRepo, {
+  const failedWorkflowRuns = await octokit.paginate(octokit.rest.actions.listWorkflowRunsForRepo, {
     owner: context.repo.owner,
     repo: context.repo.repo,
     head_sha: inputs.sha,
@@ -120,9 +120,30 @@ const findWorkflowRunsForRerun = async (inputs: Inputs, octokit: Octokit, contex
     exclude_pull_requests: true,
     per_page: 100,
   })
+  core.startGroup(`Found ${failedWorkflowRuns.length} failed workflow runs`)
+  for (const workflowRun of failedWorkflowRuns) {
+    core.info(`- ${workflowRun.name}: ${workflowRun.html_url}: ${workflowRun.conclusion ?? '-'}: ${workflowRun.status}`)
+  }
+  core.endGroup()
+
+  core.info(`Finding the cancelled workflow runs for commit ${inputs.sha} and event ${inputs.event}`)
+  const cancelledWorkflowRuns = await octokit.paginate(octokit.rest.actions.listWorkflowRunsForRepo, {
+    owner: context.repo.owner,
+    repo: context.repo.repo,
+    head_sha: inputs.sha,
+    event: inputs.event,
+    status: 'cancelled',
+    exclude_pull_requests: true,
+    per_page: 100,
+  })
+  core.startGroup(`Found ${cancelledWorkflowRuns.length} cancelled workflow runs`)
+  for (const workflowRun of cancelledWorkflowRuns) {
+    core.info(`- ${workflowRun.name}: ${workflowRun.html_url}: ${workflowRun.conclusion ?? '-'}: ${workflowRun.status}`)
+  }
+  core.endGroup()
 
   // Avoid re-running the current workflow to prevent an infinite loop.
-  const workflowRun = rawWorkflowRuns.filter((workflowRun) => workflowRun.name !== context.workflow)
-  core.info(`Found ${rawWorkflowRuns.length} failed workflow runs`)
-  return workflowRun
+  return [...failedWorkflowRuns, ...cancelledWorkflowRuns].filter(
+    (workflowRun) => workflowRun.name !== context.workflow,
+  )
 }
