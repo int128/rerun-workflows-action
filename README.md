@@ -62,7 +62,11 @@ jobs:
 
 ## Specification
 
-This action finds the failed workflow runs on the specified event and commit.
+This action finds the following workflow runs on the specified event and commit:
+
+- `failure`
+- `cancelled`
+
 For example, there are the following workflow runs,
 
 - :white_check_mark: `microservice1-test`
