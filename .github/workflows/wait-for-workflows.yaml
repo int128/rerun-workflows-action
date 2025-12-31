@@ -9,3 +9,6 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: int128/wait-for-workflows-action@8c55b880738d84f28c4382fffe165895a01fed0e # v1.53.0
+        with:
+          exclude-workflow-names: |
+            fixture
