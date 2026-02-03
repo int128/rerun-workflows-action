@@ -9,6 +9,8 @@ type Inputs = {
 
 type Outputs = {
   workflowRunsCount: number
+  rerunSuccessCount: number
+  rerunFailureCount: number
 }
 
 export const run = async (inputs: Inputs, octokit: Octokit, context: Context): Promise<Outputs> => {
@@ -45,13 +47,13 @@ export const run = async (inputs: Inputs, octokit: Octokit, context: Context): P
   }
 
   core.info(`Do nothing for the current event`)
-  return { workflowRunsCount: 0 }
+  return { workflowRunsCount: 0, rerunSuccessCount: 0, rerunFailureCount: 0 }
 }
 
 const rerunFailedWorkflowRuns = async (inputs: Inputs, octokit: Octokit, context: Context): Promise<Outputs> => {
   const workflowRuns = await findWorkflowRunsForRerun(inputs, octokit, context)
   if (workflowRuns.length === 0) {
-    return { workflowRunsCount: 0 }
+    return { workflowRunsCount: 0, rerunSuccessCount: 0, rerunFailureCount: 0 }
   }
 
   const rerunWorkflowRuns = []
@@ -65,7 +67,7 @@ const rerunFailedWorkflowRuns = async (inputs: Inputs, octokit: Octokit, context
       })
     } catch (error: unknown) {
       if (error instanceof Error) {
-        core.error(`Failed to rerun: ${error}`)
+        core.error(`${workflowRun.name}: ${error}`)
         rerunWorkflowRuns.push({ workflowRun, error })
         continue
       }
@@ -97,15 +99,17 @@ const rerunFailedWorkflowRuns = async (inputs: Inputs, octokit: Octokit, context
   ])
   await core.summary.write()
 
-  const errors = rerunWorkflowRuns.filter(({ error }) => error)
-  if (errors.length > 0) {
-    throw new Error(
-      `Failed to rerun some workflow runs. ` +
-        `See ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId} for details.`,
+  const failures = rerunWorkflowRuns.filter(({ error }) => error !== undefined)
+  if (failures.length > 0) {
+    core.warning(
+      `Could not rerun ${failures.length} workflow runs. ` +
+        `See ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId} for summary.`,
     )
   }
   return {
-    workflowRunsCount: workflowRuns.length,
+    workflowRunsCount: rerunWorkflowRuns.length,
+    rerunSuccessCount: rerunWorkflowRuns.length - failures.length,
+    rerunFailureCount: failures.length,
   }
 }
 

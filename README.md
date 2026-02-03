@@ -62,7 +62,7 @@ jobs:
 
 ## Specification
 
-This action finds the following workflow runs on the specified event and commit:
+This action finds the following statuses of workflow runs on the specified event and commit:
 
 - `failure`
 - `cancelled`
@@ -86,11 +86,21 @@ this action reruns `microservice2-test` and `microservice4-test`.
 
 If `event` and `sha` are not specified, this action infers the event and commit as follows:
 
-- When this action is run on a pull request, it finds the workflow runs triggered by the pull request.
+- When this action is run on `pull_request` event, it finds the workflow runs triggered by `pull_request` event.
 - Otherwise, it does nothing.
 
 ### Outputs
 
-| Name                  | Description                       |
-| --------------------- | --------------------------------- |
-| `workflow-runs-count` | The number of rerun workflow runs |
+| Name                  | Description                                                                |
+| --------------------- | -------------------------------------------------------------------------- |
+| `workflow-runs-count` | Number of workflow runs attempted to rerun                                 |
+| `rerun-success-count` | Number of workflow runs where the rerun request was accepted by GitHub API |
+| `rerun-failure-count` | Number of workflow runs where the rerun request was failed                 |
+
+`rerun-success-count` means the rerun request was accepted by GitHub API.
+It does not guarantee the rerun jobs will eventually succeed.
+
+`rerun-failure-count` means the rerun request was rejected by GitHub API or failed to be sent.
+GitHub API may reject the rerun request if the workflow run is too old.
+
+If `rerun-failure-count` is greater than 0, this action shows a warning message but does not fail.
