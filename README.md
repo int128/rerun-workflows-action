@@ -95,7 +95,7 @@ If `event` and `sha` are not specified, this action infers the event and commit 
 | --------------------- | -------------------------------------------------------------------------- |
 | `workflow-runs-count` | Number of workflow runs attempted to rerun                                 |
 | `rerun-success-count` | Number of workflow runs where the rerun request was accepted by GitHub API |
-| `rerun-failure-count` | Number of workflow runs where the rerun request was failed                 |
+| `rerun-failure-count` | Number of workflow runs where the rerun request failed                     |
 
 `rerun-success-count` means the rerun request was accepted by GitHub API.
 It does not guarantee the rerun jobs will eventually succeed.
