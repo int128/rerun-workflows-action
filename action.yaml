@@ -15,7 +15,11 @@ inputs:
 
 outputs:
   workflow-runs-count:
-    description: Number of rerun workflow runs
+    description: Number of workflow runs attempted to rerun
+  rerun-success-count:
+    description: Number of workflow runs where the rerun request was accepted by GitHub API
+  rerun-failure-count:
+    description: Number of workflow runs where the rerun request failed
 
 runs:
   using: 'node20'
