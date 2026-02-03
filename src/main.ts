@@ -11,6 +11,9 @@ const main = async () => {
     getOctokit(),
     await getContext(),
   )
+  core.startGroup('Outputs')
+  core.info(JSON.stringify(outputs, null, 2))
+  core.endGroup()
   core.setOutput('workflow-runs-count', outputs.workflowRunsCount)
   core.setOutput('rerun-success-count', outputs.rerunSuccessCount)
   core.setOutput('rerun-failure-count', outputs.rerunFailureCount)
