@@ -27,6 +27,6 @@ jobs:
       - name: Use int128/rerun-workflows-action
         uses: ./
 
-      - uses: int128/label-action@0517be74244c95c734f19cbcf3a1ed21297ca350 # v1.26.0
+      - uses: int128/label-action@ba1833e9299ed7472913483ad0e36a27fe71a0c6 # v1.27.0
         with:
           remove-labels: ${{ github.event.label.name }}
