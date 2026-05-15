@@ -22,5 +22,5 @@ outputs:
     description: Number of workflow runs where the rerun request failed
 
 runs:
-  using: 'node20'
+  using: 'node24'
   main: 'dist/index.js'
