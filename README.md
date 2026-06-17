@@ -87,6 +87,8 @@ this action reruns `microservice2-test` and `microservice4-test`.
 If `event` and `sha` are not specified, this action infers the event and commit as follows:
 
 - When this action is run on `pull_request` event, it finds the workflow runs triggered by `pull_request` event.
+- When this action is run on `issue_comment` event, it finds the workflow runs triggered by the pull request associated with the comment.
+- When this action is run on `workflow_run` event, it finds the workflow runs triggered by the event and commit.
 - Otherwise, it does nothing.
 
 ### Outputs
