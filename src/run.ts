@@ -46,6 +46,20 @@ export const run = async (inputs: Inputs, octokit: Octokit, context: Context): P
     )
   }
 
+  if ('workflow_run' in context.payload && context.payload.workflow_run) {
+    core.startGroup(`Triggered by workflow_run event for workflow ${context.payload.workflow_run.name}`)
+    core.info(JSON.stringify(context.payload.workflow_run, null, 2))
+    core.endGroup()
+    return await rerunFailedWorkflowRuns(
+      {
+        event: context.payload.workflow_run.event,
+        sha: context.payload.workflow_run.head_sha,
+      },
+      octokit,
+      context,
+    )
+  }
+
   core.info(`Do nothing for the current event`)
   return { workflowRunsCount: 0, rerunSuccessCount: 0, rerunFailureCount: 0 }
 }
