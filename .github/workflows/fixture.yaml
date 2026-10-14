@@ -20,7 +20,6 @@ on:
       - .github/workflows/ts.yaml
     branches:
       - main
-      - int128/Support-push-event
 
 jobs:
   success-on-rerun:
