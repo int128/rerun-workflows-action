@@ -11,6 +11,8 @@ export type Context = {
     owner: string
     repo: string
   }
+  eventName: string
+  sha: string
   workflow: string
   runId: number
   serverUrl: string
@@ -21,6 +23,8 @@ export const getContext = async (): Promise<Context> => {
   // https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/store-information-in-variables#default-environment-variables
   return {
     repo: getRepo(),
+    eventName: getEnv('GITHUB_EVENT_NAME'),
+    sha: getEnv('GITHUB_SHA'),
     workflow: getEnv('GITHUB_WORKFLOW'),
     runId: Number.parseInt(getEnv('GITHUB_RUN_ID'), 10),
     serverUrl: getEnv('GITHUB_SERVER_URL'),

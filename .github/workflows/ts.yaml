@@ -18,6 +18,7 @@ on:
       - '*.json'
       - '*.yaml'
       - .github/workflows/ts.yaml
+      - .github/workflows/fixture.yaml
 
 jobs:
   test:

@@ -10,6 +10,16 @@ on:
       - '*.yaml'
       - .github/workflows/ts.yaml
       - .github/workflows/fixture.yaml
+  push:
+    # This must be same as ts.yaml
+    paths:
+      - src/**
+      - tests/**
+      - '*.json'
+      - '*.yaml'
+      - .github/workflows/ts.yaml
+    branches:
+      - main
 
 jobs:
   success-on-rerun:
