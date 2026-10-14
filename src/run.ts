@@ -32,7 +32,7 @@ export const run = async (inputs: Inputs, octokit: Octokit, context: Context): P
   if (context.eventName === 'push') {
     return await rerunFailedWorkflowRuns(
       {
-        event: 'push',
+        event: context.eventName,
         sha: context.sha,
       },
       octokit,
