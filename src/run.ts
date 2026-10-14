@@ -29,6 +29,17 @@ export const run = async (inputs: Inputs, octokit: Octokit, context: Context): P
     )
   }
 
+  if (context.eventName === 'push') {
+    return await rerunFailedWorkflowRuns(
+      {
+        event: context.eventName,
+        sha: context.sha,
+      },
+      octokit,
+      context,
+    )
+  }
+
   if ('issue' in context.payload && context.payload.issue.pull_request) {
     core.info(`Finding the pull request #${context.payload.issue.number}`)
     const { data: pull } = await octokit.rest.pulls.get({

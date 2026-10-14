@@ -18,9 +18,25 @@ on:
       - '*.json'
       - '*.yaml'
       - .github/workflows/ts.yaml
+      - .github/workflows/fixture.yaml
 
 jobs:
   test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .node-version
+      - run: npm install -g corepack
+      - run: corepack enable
+      - run: pnpm i
+      - run: pnpm test
+
+  e2e-test:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
@@ -34,14 +50,9 @@ jobs:
       - run: npm install -g corepack
       - run: corepack enable
       - run: pnpm i
-      - run: pnpm test
       - run: pnpm build
-
-      - name: Use int128/rerun-workflows-action
+      - name: Run int128/rerun-workflows-action
         uses: ./
-        with:
-          event: ${{ github.event_name }}
-          sha: ${{ github.event.pull_request.head.sha || github.sha }}
 
   generate:
     runs-on: ubuntu-latest
