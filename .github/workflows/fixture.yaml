@@ -9,6 +9,7 @@ on:
       - '*.json'
       - '*.yaml'
       - .github/workflows/ts.yaml
+      - .github/workflows/fixture.yaml
 
 jobs:
   success-on-rerun:
